@@ -1,9 +1,9 @@
 
-# CSE512-Project-Phase2-Requirement
+# CSE512-Project-Phase1-Requirement
 
 ## Requirement
 
-In Project Phase 2, you need to write two User Defined Functions ST\_Contains and ST\_Within in SparkSQL and use them to do four spatial queries:
+In Project Phase 1, you need to write two User Defined Functions ST\_Contains and ST\_Within in SparkSQL and use them to do four spatial queries:
 
 * Range query: Use ST_Contains. Given a query rectangle R and a set of points P, find all the points within R.
 * Range join query: Use ST_Contains. Given a set of Rectangles R and a set of Points S, find all (Point, Rectangle) pairs such that the point is within the rectangle.
