@@ -59,7 +59,11 @@ object SpatialQuery extends App{
     rectangleDf.createOrReplaceTempView("rectangle")
 
     // YOU NEED TO FILL IN THIS USER DEFINED FUNCTION
-    spark.udf.register("ST_Contains",(queryRectangle:String, pointString:String)=>((ST_Contains(queryRectangle, pointString))))
+    spark.udf.register("ST_Contains",(queryRectangle:String, pointString:String)=>(({
+      var pointDf: String = pointString;
+      var rectangleDf: String = queryRectangle;
+      ST_Contains(pointDf, rectangleDf)
+    })))
 
     val resultDf = spark.sql("select * from rectangle,point where ST_Contains(rectangle._c0,point._c0)")
     resultDf.show()
