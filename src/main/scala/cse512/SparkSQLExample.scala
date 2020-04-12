@@ -14,7 +14,7 @@ object SparkSQLExample {
     val spark = SparkSession
       .builder()
       .appName("CSE512-Phase2")
-      .config("spark.some.config.option", "some-value")//.master("local[*]")
+      .config("spark.some.config.option", "some-value").master("local[*]")
       .getOrCreate()
 
     paramsParser(spark, args)
