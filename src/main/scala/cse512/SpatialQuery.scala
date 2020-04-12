@@ -1,6 +1,7 @@
 package cse512
 
 import org.apache.spark.sql.SparkSession
+import scala.math._
 
 object SpatialQuery extends App{
 
@@ -27,6 +28,13 @@ object SpatialQuery extends App{
       return false
   }
 
+  def StWithin(pointC: Array[Double], pointP: Array[Double], distanceD:Double):Boolean = {
+    var euclideandist: Double = sqrt(pow(pointP(0) - pointC(0), 2) + pow(pointP(1) - pointC(1), 2))
+    if (euclideandist <= distanceD)
+      return true
+    else
+      return false
+  }
 
   def runRangeQuery(spark: SparkSession, arg1: String, arg2: String): Long = {
 
@@ -65,7 +73,11 @@ object SpatialQuery extends App{
     pointDf.createOrReplaceTempView("point")
 
     // YOU NEED TO FILL IN THIS USER DEFINED FUNCTION
-    spark.udf.register("ST_Within",(pointString1:String, pointString2:String, distance:Double)=>((false)))
+    spark.udf.register("ST_Within",(pointString1:String, pointString2:String, distance:Double)=>(({
+      var fixed_point: Array[Double] = pointString2.split(",").map(_.toDouble);
+      var dist_point: Array[Double] = pointString1.split(",").map(_.toDouble);
+      StWithin(fixed_point,dist_point,distance)
+    })))
 
     val resultDf = spark.sql("select * from point where ST_Within(point._c0,'"+arg2+"',"+arg3+")")
     resultDf.show()
@@ -82,7 +94,11 @@ object SpatialQuery extends App{
     pointDf2.createOrReplaceTempView("point2")
 
     // YOU NEED TO FILL IN THIS USER DEFINED FUNCTION
-    spark.udf.register("ST_Within",(pointString1:String, pointString2:String, distance:Double)=>((false)))
+    spark.udf.register("ST_Within",(pointString1:String, pointString2:String, distance:Double)=>(({
+      var point_P1: Array[Double] = pointString1.split(",").map(_.toDouble);
+      var point_P2: Array[Double] = pointString2.split(",").map(_.toDouble);
+      StWithin(point_P1,point_P2,distance)
+    })))
     val resultDf = spark.sql("select * from point1 p1, point2 p2 where ST_Within(p1._c0, p2._c0, "+arg3+")")
     resultDf.show()
 
